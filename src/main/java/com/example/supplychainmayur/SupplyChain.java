@@ -3,10 +3,12 @@ package com.example.supplychainmayur;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -15,7 +17,7 @@ import java.io.IOException;
 public class SupplyChain extends Application {
 
     // Initializing global variable width, height and header bar
-    public static final int width = 700, height = 500, headerBar = 60;
+    public static final int width = 700, height = 500, headerBar = 60 , BUTTON_WIDTH = 60, BUTTON_HEIGHT = 20;
 
     // Initializing new frame
     Pane bodyPane = new Pane();
@@ -63,6 +65,9 @@ public class SupplyChain extends Application {
         TextField searchText = new TextField();
         Button searchButton = new Button("Search");
         Button homePageButton = new Button("Home Page");
+        searchButton.setPrefSize(BUTTON_WIDTH, BUTTON_HEIGHT);
+
+
 
         // Event handling for searchButton
         searchButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -117,7 +122,20 @@ public class SupplyChain extends Application {
         });
 
         // Initializing globalSignUpButton
-        getGlobalSignUpButton = new Button("Sign Up");
+        getGlobalSignUpButton = new Button();
+        getGlobalSignUpButton.setPrefSize(BUTTON_WIDTH, BUTTON_HEIGHT);
+
+
+        //Create imageview with background image
+        Image img = new Image(("C:\\Users\\dell\\IdeaProjects\\SupplyChainMayur\\src\\main\\register-button-png-8.png"));
+        ImageView view = new ImageView();
+        view.setImage(img);
+        view.setFitWidth(BUTTON_WIDTH);
+        view.setFitHeight(BUTTON_HEIGHT);
+        //view.setPreserveRatio(true);
+
+        //Attach image to the button
+        getGlobalSignUpButton.setGraphic(view);
 
         // Event handling for globalSignUpButton
         getGlobalSignUpButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -227,11 +245,14 @@ public class SupplyChain extends Application {
                     }
                     // If User have Logged-in
                     else{
-//                        Product selectedProduct = productDetails.getSelectedProduct();
-//                        GridPane pane = userCart();
-//                        pane.add(selectedProduct);
-                        footerBarMessageLabel.setTextFill(Color.GREEN);
-                        footerBarMessageLabel.setText("Item Added to your Cart");
+                        Product selectedProduct = productDetails.getSelectedProduct();
+                        if(selectedProduct==null){
+                            footerBarMessageLabel.setTextFill(Color.RED);
+                            footerBarMessageLabel.setText("Please Select any Item");
+                        }else{
+                            footerBarMessageLabel.setTextFill(Color.GREEN);
+                            footerBarMessageLabel.setText("Item Added to your Cart");
+                        }
                     }
                 }catch (Exception e){
                     e.printStackTrace(); // Exception handling
@@ -288,9 +309,8 @@ public class SupplyChain extends Application {
         cartPane.setMinSize(bodyPane.getMinWidth(), bodyPane.getMinHeight());
         cartPane.setVgap(5);
         cartPane.setHgap(5);
-        //gridPane.setStyle("-fx-background-color: #C0C0C0");
+        cartPane.setStyle("-fx-background-color: #FFFAF0");
         cartPane.setAlignment(Pos.CENTER);
-
 
         cartPane.add(cartMessageLabel, 0,0);
 
@@ -349,17 +369,25 @@ public class SupplyChain extends Application {
         gridPane.setMinSize(bodyPane.getMinWidth(), bodyPane.getMinHeight());
         gridPane.setVgap(5);
         gridPane.setHgap(5);
-        //gridPane.setStyle("-fx-background-color: #A9A9A9");
-        gridPane.setAlignment(Pos.CENTER);
+        gridPane.setStyle("-fx-background-color: #FFFAF0");
+        gridPane.setAlignment(Pos.TOP_CENTER);
 
 
         // Adding Label, TextField and Button in grid pane
-        gridPane.add(emailLabel, 0, 0);   // first is x co-ordinate and second is y.
-        gridPane.add(emailTextField, 1, 0);
-        gridPane.add(passwordLabel, 0, 1);
-        gridPane.add(passwordField, 1, 1);
-        gridPane.add(loginButton, 0, 2);
-        gridPane.add(messageLabel, 1, 2);
+        gridPane.add(emailLabel, 1, 1);   // first is x co-ordinate and second is y.
+        gridPane.add(emailTextField, 2, 1);
+        gridPane.add(passwordLabel, 1, 2);
+        gridPane.add(passwordField, 2, 2);
+        gridPane.add(loginButton, 1, 3);
+        gridPane.add(messageLabel, 2, 3);
+
+        // Adding image icon in login page
+        Image loginImg = new Image("C:\\Users\\dell\\IdeaProjects\\SupplyChainMayur\\src\\main\\free-user-login-icon-305-thumb.png");
+        ImageView loginView = new ImageView();
+        loginView.setImage(loginImg);
+        loginView.setFitWidth(150);
+        loginView.setFitHeight(150);
+        gridPane.add(loginView, 0, 0);
 
         return gridPane;
     }
@@ -387,6 +415,7 @@ public class SupplyChain extends Application {
 
         // Initializing signUpButton
         Button signUpButton = new Button("Sign Up");
+
 
         // Event handling for signUpButton
         signUpButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -451,24 +480,33 @@ public class SupplyChain extends Application {
         gridPane.setMinSize(bodyPane.getMinWidth(), bodyPane.getMinHeight());
         gridPane.setVgap(5);
         gridPane.setHgap(5);
-        //gridPane.setStyle("-fx-background-color: #C0C0C0");
-        gridPane.setAlignment(Pos.CENTER);
+        gridPane.setStyle("-fx-background-color: #FFFAF0");
+        gridPane.setAlignment(Pos.TOP_CENTER);
 
         // Adding Label, TextField and Button in pane
-        gridPane.add(firstNameLabel, 0, 0);   // first is x co-ordinate and second is y.
-        gridPane.add(firstNameTextField, 1, 0);
-        gridPane.add(lastNameLabel, 0, 1);
-        gridPane.add(lastNameTextField, 1, 1);
-        gridPane.add(addressLabel, 0, 2);
-        gridPane.add(addressTextField, 1, 2);
-        gridPane.add(mobileNoLabel, 0,3);
-        gridPane.add(mobileNoTextField,1,3);
-        gridPane.add(emailLabel,0,4);
-        gridPane.add(emailTextField,1,4);
-        gridPane.add(passwordLabel, 0, 5);
-        gridPane.add(passwordField, 1, 5);
-        gridPane.add(signUpButton, 0, 6);
-        gridPane.add(messageLabel, 1, 6);
+        gridPane.add(firstNameLabel, 1, 1);   // first is x co-ordinate and second is y.
+        gridPane.add(firstNameTextField, 2, 1);
+        gridPane.add(lastNameLabel, 1, 2);
+        gridPane.add(lastNameTextField, 2, 2);
+        gridPane.add(addressLabel, 1, 3);
+        gridPane.add(addressTextField, 2, 3);
+        gridPane.add(mobileNoLabel, 1,4);
+        gridPane.add(mobileNoTextField,2,4);
+        gridPane.add(emailLabel,1,5);
+        gridPane.add(emailTextField,2,5);
+        gridPane.add(passwordLabel, 1, 6);
+        gridPane.add(passwordField, 2, 6);
+        gridPane.add(signUpButton, 1, 7);
+        gridPane.add(messageLabel, 2, 7);
+
+
+        // Adding image icon in sign up page
+        Image registerImg = new Image("C:\\Users\\dell\\IdeaProjects\\SupplyChainMayur\\src\\main\\Register_Icon.png");
+        ImageView registerView = new ImageView();
+        registerView.setImage(registerImg);
+        registerView.setFitWidth(130);
+        registerView.setFitHeight(130);
+        gridPane.add(registerView, 0, 0);
 
         return gridPane;
     }
