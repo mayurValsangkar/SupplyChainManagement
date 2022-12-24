@@ -4,10 +4,7 @@ import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.Scene;
@@ -47,18 +44,25 @@ public class SupplyChain extends Application {
     // Declaring footerBarMessageLabel as null
     Label footerBarMessageLabel = null;
 
+    // Declaring cartMessageLabel as null
+    Label cartMessageLabel = new Label("Your Cart is Empty :(");
+
     // Declaring string customerEmail
     String customerEmail = "";
 
     // Declaring variable globalLogin as false
     boolean globalLogin = false;
 
+    // Declaring variable inCart as false
+    boolean inCart = false;
+
     // Creating header bar ---->
     private GridPane headerBar() {
 
-        // Initializing TextField and Button for Search
+        // Initializing TextField and Button
         TextField searchText = new TextField();
         Button searchButton = new Button("Search");
+        Button homePageButton = new Button("Home Page");
 
         // Event handling for searchButton
         searchButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -69,6 +73,7 @@ public class SupplyChain extends Application {
                 // clear body and put this new pane in the body
                 bodyPane.getChildren().clear();
                 bodyPane.getChildren().add(productDetails.getProductsByName(productName));
+                globalLoginButton.setVisible(true);
             }
         });
 
@@ -101,7 +106,7 @@ public class SupplyChain extends Application {
                     getGlobalSignUpButton.setDisable(false);
                     getGlobalSignUpButton.setVisible(true);
                     customerEmailLabel.setText("Welcome User !!");
-                    globalLoginButton.setText("Login");
+                    globalLoginButton.setText("Log In");
                     globalLoginButton.setVisible(true);
                     footerBarMessageLabel.setText("");
                     globalLogin = false;
@@ -127,6 +132,25 @@ public class SupplyChain extends Application {
             }
         });
 
+        // Event handling for homePage
+        homePageButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+
+                bodyPane.getChildren().clear();
+                bodyPane.getChildren().add(productDetails.getAllProducts());
+                globalLoginButton.setVisible(true);
+                if(globalLogin==false){
+                    getGlobalSignUpButton.setVisible(true);
+                    globalSignUpLabel.setText("New User ?");
+                    customerEmail = "";
+                    customerEmailLabel.setText("Welcome User !!");
+                    globalLoginButton.setText("Log In");
+                }
+                footerBarMessageLabel.setText("");
+            }
+        });
+
         // Initializing customerEmailLabel
         customerEmailLabel = new Label("Welcome User !!");
 
@@ -143,8 +167,9 @@ public class SupplyChain extends Application {
         gridPane.add(searchButton, 2, 1);
         gridPane.add(globalLoginButton, 3, 1);
         gridPane.add(customerEmailLabel, 4, 1);
-        gridPane.add(getGlobalSignUpButton, 45, 1);
-        gridPane.add(globalSignUpLabel, 45, 2);
+        gridPane.add(homePageButton, 25, 1);
+        gridPane.add(getGlobalSignUpButton, 30, 1);
+        gridPane.add(globalSignUpLabel, 30, 2);
 
         return gridPane;
     }
@@ -152,9 +177,10 @@ public class SupplyChain extends Application {
     // creating footer bar ---->
     private GridPane footerBar(){
 
-        // Initializing addToCart and buyNow button
+        // Initializing addToCart, buyNow button and viewCart
         Button addToCart = new Button("Add to Cart");
         Button buyNow = new Button("Buy Now");
+        Button viewCart = new Button("View Cart");
 
         // Initializing footerBarMessageLabel
         footerBarMessageLabel = new Label("");
@@ -189,21 +215,86 @@ public class SupplyChain extends Application {
             }
         });
 
+        // Event handling for addToCart
+        addToCart.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                try {
+                    // If User have not Logged-in
+                    if(customerEmail.isEmpty()){
+                        footerBarMessageLabel.setTextFill(Color.RED);
+                        footerBarMessageLabel.setText("Please Login Into your Account");
+                    }
+                    // If User have Logged-in
+                    else{
+//                        Product selectedProduct = productDetails.getSelectedProduct();
+//                        GridPane pane = userCart();
+//                        pane.add(selectedProduct);
+                        footerBarMessageLabel.setTextFill(Color.GREEN);
+                        footerBarMessageLabel.setText("Item Added to your Cart");
+                    }
+                }catch (Exception e){
+                    e.printStackTrace(); // Exception handling
+                }
+            }
+        });
+
+        // Event handling for viewCart
+        viewCart.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                try {
+                    // If User have not Logged-in
+                    if(customerEmail.isEmpty()){
+                        footerBarMessageLabel.setTextFill(Color.RED);
+                        footerBarMessageLabel.setText("Please Login Into your Account");
+                    }
+                    // If User have Logged-in
+                    else{
+                        bodyPane.getChildren().clear();
+                        bodyPane.getChildren().add(userCart());
+                        inCart = true;
+                    }
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        });
+
         // Creating new pane, setting its dimension, alignment and style
         GridPane gridPane = new GridPane();
         gridPane.setMinSize(bodyPane.getMinWidth(), headerBar);
         gridPane.setVgap(5);
-        gridPane.setHgap(50);
+        gridPane.setHgap(40);
         gridPane.setTranslateY(height-headerBar+50);
         gridPane.setStyle("-fx-background-color : #87CEEB");
-        gridPane.setAlignment(Pos.CENTER);
+        gridPane.setAlignment(Pos.CENTER_LEFT);
 
         // Adding Label, Button in pane
         gridPane.add(addToCart, 1,1);
-        gridPane.add(buyNow, 2,1);
-        gridPane.add(footerBarMessageLabel,3,1);
+        gridPane.add(buyNow, 3,1);
+        gridPane.add(viewCart, 2,1);
+        gridPane.add(footerBarMessageLabel,4,1);
 
         return gridPane;
+    }
+
+    // Creating cart
+    private GridPane userCart() {
+
+        // Creating new pane, setting its dimension, alignment and style
+        GridPane cartPane = new GridPane();
+        cartPane.setMinSize(bodyPane.getMinWidth(), bodyPane.getMinHeight());
+        cartPane.setVgap(5);
+        cartPane.setHgap(5);
+        //gridPane.setStyle("-fx-background-color: #C0C0C0");
+        cartPane.setAlignment(Pos.CENTER);
+
+
+        cartPane.add(cartMessageLabel, 0,0);
+
+        return cartPane;
     }
 
     // Creating login page ---->
@@ -219,7 +310,7 @@ public class SupplyChain extends Application {
         PasswordField passwordField = new PasswordField();
 
         // Initialize loginButton
-        Button loginButton = new Button("Login");
+        Button loginButton = new Button("Log In");
 
         // Event handling for loginButton
         loginButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -390,6 +481,7 @@ public class SupplyChain extends Application {
         root.setPrefSize(width, height+headerBar);
         bodyPane.setMinSize(width, height);
         bodyPane.setTranslateY(headerBar);
+
 
         // Adding all products in body pane
         bodyPane.getChildren().addAll(productDetails.getAllProducts());
